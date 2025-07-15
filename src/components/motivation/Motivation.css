@@ -1,0 +1,27 @@
+.motivation {
+  margin-bottom: 2rem;
+}
+
+.motivation-text,
+.friends-mention {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  letter-spacing: 0.5px;
+  transition: opacity 0.15s;
+}
+
+.friends-mention {
+  font-size: 1rem;
+}
+
+.fade-motivation {
+  transition: opacity 0.3s;
+}
+.fade-in {
+  opacity: 1;
+}
+.fade-out {
+  opacity: 0.3;
+}

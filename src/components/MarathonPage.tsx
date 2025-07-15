@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import "./../index.css"; // FIXME: Break it down in components
+import "./../index.css";
 import asierImg from "./../assets/images/asier.jpg";
 import hodeiImg from "./../assets/images/hodei.jpg";
 import joelImg from "./../assets/images/joel.jpg";
@@ -7,6 +7,11 @@ import adrianImg from "./../assets/images/adrian.jpg";
 import stravaImg from "./../assets/images/strava.png";
 import trackImg from "./../assets/images/track.png";
 import song from "./../assets/audio/song.mp3";
+import CountdownTimer from "./countdownTimer/CountdownTimer";
+import Sparkles from "./sparkles/Sparkles";
+import RunnersGrid from "./runnerGrid/RunnersGrid";
+import Motivation from "./motivation/Motivation";
+import TrackLink from "./trackLink/TrackLink";
 
 const TARGET_DATE = new Date("March 16, 2026 00:00:00").getTime();
 const CARD_IDS = ["adrian", "asier", "hodei", "joel"];
@@ -19,7 +24,6 @@ const MOTIVATIONAL_MESSAGES = [
   "You're a champion! 🏃‍♂️",
 ];
 
-// Helper for sparkle
 const getRandomPercent = () => `${Math.random() * 100}%`;
 
 type StravaPerson = {
@@ -122,7 +126,6 @@ const MarathonPage: React.FC = () => {
     fetch("/api/strava")
       .then((res) => res.json())
       .then((data: unknown) => {
-        console.log('data :>> ', data);
         const activities = (data as { activities: StravaRunner[] }).activities;
         setStravaData(activities);
         setStravaLoading(false);
@@ -209,27 +212,23 @@ const MarathonPage: React.FC = () => {
 
   // Marathon day content
   const isMarathonDay = countdown.isMarathonDay;
+  const motivationalMessage = isMarathonDay
+    ? "Let's do this! 🚀"
+    : MOTIVATIONAL_MESSAGES[motivationIndex];
+  const friendsMention = isMarathonDay
+    ? "Time to show what you're made of! 🏆"
+    : "Shoutout to the marathon squad! Let's make this epic!";
+
+  const images = {
+    asier: asierImg,
+    hodei: hodeiImg,
+    joel: joelImg,
+    adrian: adrianImg,
+  };
 
   return (
     <div className="container" style={{ position: "relative" }}>
-      {/* Sparkles */}
-      {sparkles.map((sparkle) => (
-        <div
-          key={sparkle.id}
-          style={{
-            position: "absolute",
-            left: sparkle.left,
-            top: sparkle.top,
-            fontSize: "1rem",
-            opacity: 0.8,
-            pointerEvents: "none",
-            zIndex: 5,
-            animation: "sparkle 2s ease-out forwards",
-          }}
-        >
-          ✨
-        </div>
-      ))}
+      <Sparkles sparkles={sparkles} />
       <div className="content">
         <h1 className="title">
           {isMarathonDay ? "IT'S MARATHON DAY! 🏃‍♂️" : "BARCELONA MARATHON 2026!"}
@@ -243,141 +242,30 @@ const MarathonPage: React.FC = () => {
           id="total-km-combined"
           dangerouslySetInnerHTML={{ __html: totalKmCombined }}
         />
-        <div className="countdown-container">
-          <div className="countdown">
-            {(["days", "hours", "minutes", "seconds"] as const).map((unit) => (
-              <React.Fragment key={unit}>
-                <div className="countdown-item" onClick={handleCountdownClick}>
-                  <div className="countdown-number" id={unit}>
-                    {countdown[unit]}
-                  </div>
-                  <div className="countdown-label">
-                    {unit.charAt(0).toUpperCase() + unit.slice(1)}
-                  </div>
-                </div>
-                {unit !== "seconds" && (
-                  <div className="countdown-separator">:</div>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-        <div className="runners-section">
-          <div className="runners-grid">
-            {CARD_IDS.map((cardId) => {
-              const img =
-                cardId === "asier"
-                  ? asierImg
-                  : cardId === "hodei"
-                  ? hodeiImg
-                  : cardId === "joel"
-                  ? joelImg
-                  : adrianImg;
-              const stravaUrl =
-                cardId === "asier"
-                  ? "https://www.strava.com/athletes/21162116"
-                  : cardId === "hodei"
-                  ? "https://www.strava.com/athletes/172716857"
-                  : cardId === "joel"
-                  ? "https://www.strava.com/athletes/120181216"
-                  : "https://www.strava.com/athletes/71606225";
-              // Strava data for this runner
-              let runnerKm: number | null = null;
-              let runnerTime: string | null = null;
-              if (stravaData) {
-                const runnerObj = stravaData.find(
-                  (item) => Object.keys(item)[0] === cardId
-                );
-                if (runnerObj) {
-                  const person = Object.values(runnerObj)[0];
-                  if (person) {
-                    runnerKm = person.totalKm;
-                    if (typeof person.totalTime === "string") {
-                      runnerTime = person.totalTime;
-                    } else if (
-                      typeof person.totalTime === "object" &&
-                      person.totalTime !== null &&
-                      "time" in person.totalTime
-                    ) {
-                      runnerTime = person.totalTime.time;
-                    }
-                  }
-                }
-              }
-              return (
-                <a
-                  href={stravaUrl}
-                  target="_blank"
-                  className="runner-link"
-                  key={cardId}
-                  rel="noopener noreferrer"
-                >
-                  <div id={cardId} className="runner-card">
-                    <img src={img} alt={cardId} className="runner-image" />
-                    <div className="strava-badge">
-                      <img
-                        src={stravaImg}
-                        alt="Strava"
-                        className="strava-badge"
-                      />
-                    </div>
-                    <div className="runner-result-area">
-                      {stravaLoading ? (
-                        <img
-                          src={stravaImg}
-                          alt="Loading..."
-                          className="spinner-img"
-                          style={{ width: 24, height: 24, opacity: 0.5 }}
-                        />
-                      ) : (
-                        <>
-                          {runnerKm !== null && (
-                            <div id={`${cardId}-totalKm`}>{runnerKm} KM</div>
-                          )}
-                          {runnerTime && (
-                            <div
-                              id={`${cardId}-totalTime`}
-                              className="runner-time"
-                            >
-                              {runnerTime}
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </a>
-              );
-            })}
-          </div>
-        </div>
-        <div className="motivation">
-          <div className="motivation-text">
-            {isMarathonDay
-              ? "Let's do this! 🚀"
-              : MOTIVATIONAL_MESSAGES[motivationIndex]}
-          </div>
-          <div className="friends-mention">
-            {isMarathonDay
-              ? "Time to show what you're made of! 🏆"
-              : "Shoutout to the marathon squad! Let's make this epic!"}
-          </div>
-        </div>
-        <audio ref={audioRef} src={song} preload="auto" hidden />
-        <a
-          href="https://www.zurichmaratobarcelona.es/recorrido/"
-          target="_blank"
-          className="track-link-bottom-right"
-          rel="noopener noreferrer"
-        >
-          <img
-            src={trackImg}
-            alt="Marathon Track"
-            className="track-image-bottom-right"
-            onMouseEnter={handleMapMouseEnter}
-            onMouseLeave={handleMapMouseLeave}
-          />
-        </a>
+        <CountdownTimer
+          countdown={countdown}
+          isMarathonDay={isMarathonDay}
+          onCountdownClick={handleCountdownClick}
+        />
+        <RunnersGrid
+          CARD_IDS={CARD_IDS}
+          images={images}
+          stravaData={stravaData}
+          stravaLoading={stravaLoading}
+          stravaImg={stravaImg}
+        />
+        <Motivation
+          isMarathonDay={isMarathonDay}
+          motivationalMessage={motivationalMessage}
+          friendsMention={friendsMention}
+        />
+        <TrackLink
+          trackImg={trackImg}
+          handleMapMouseEnter={handleMapMouseEnter}
+          handleMapMouseLeave={handleMapMouseLeave}
+          audioRef={audioRef}
+          song={song}
+        />
       </div>
     </div>
   );
