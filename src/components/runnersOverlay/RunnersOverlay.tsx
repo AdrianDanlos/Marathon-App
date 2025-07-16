@@ -1,3 +1,4 @@
+import { getClosestCityDistance } from "../../utils/cityDistances";
 import { getLevelInfo } from "../../utils/levelUtils";
 import type { AthleteData } from "../../utils/types";
 import { RunnerLevel } from "../runnerLevel/RunnerLevel";
@@ -14,8 +15,9 @@ export const RunnersOverlay: React.FC<RunnersOverlayProps> = ({
   onClose,
   stravaData,
 }) => {
-  const levelInfo = getLevelInfo(stravaData.totalKm);
   const { totalKm, longestRun, fastestPace, totalTime } = stravaData;
+  const levelInfo = getLevelInfo(totalKm);
+  const { from, to, country } = getClosestCityDistance(totalKm);
 
   return (
     <div className={`runners-overlay${animate ? " show" : ""}`}>
@@ -41,10 +43,13 @@ export const RunnersOverlay: React.FC<RunnersOverlayProps> = ({
             <strong>Fastest Pace:</strong> {fastestPace} min/km
           </div>
           <div>
-            <strong>Total KM:</strong> {totalKm}
+            <strong>Total Time:</strong> {totalTime}
           </div>
           <div>
-            <strong>Total Time:</strong> {totalTime}
+            <strong>Total KM:</strong> {totalKm} km
+          </div>
+          <div>
+            <strong>Distance:</strong> {from} → {to} {country && `(${country})`}
           </div>
         </div>
       </div>
