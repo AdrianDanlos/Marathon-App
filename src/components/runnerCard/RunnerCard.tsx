@@ -1,5 +1,6 @@
 import React from "react";
 import "./RunnerCard.css";
+import spinnerImg from "../../assets/images/spinner.png";
 
 interface RunnerCardProps {
   cardId: string;
@@ -34,16 +35,13 @@ const RunnerCard: React.FC<RunnerCardProps> = ({
       <div className="runner-result-area">
         {stravaLoading ? (
           <img
-            src={stravaImg}
+            src={spinnerImg}
             alt="Loading..."
             className="spinner-img"
-            style={{ width: 24, height: 24, opacity: 0.5 }}
           />
         ) : (
           <>
-            {runnerKm !== null && (
-              <div id={`${cardId}-totalKm`}>{runnerKm} KM</div>
-            )}
+            {runnerKm !== null && <div id={`${cardId}-totalKm`}>{runnerKm} KM</div>}
             {runnerTime && (
               <div id={`${cardId}-totalTime`} className="runner-time">
                 {runnerTime}

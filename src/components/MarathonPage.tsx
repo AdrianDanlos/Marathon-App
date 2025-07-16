@@ -12,9 +12,10 @@ import Sparkles from "./sparkles/Sparkles";
 import RunnersGrid from "./runnerGrid/RunnersGrid";
 import Motivation from "./motivation/Motivation";
 import TrackLink from "./trackLink/TrackLink";
+import spinner2Img from "../assets/images/spinner2.png";
 
 const TARGET_DATE = new Date("March 16, 2026 00:00:00").getTime();
-const CARD_IDS = ["adrian", "asier", "hodei", "joel"];
+const CARD_IDS = ["asier", "hodei", "joel", "adrian"];
 const MOTIVATIONAL_MESSAGES = [
   "You've got this! 🚀",
   "Stay strong! 💪",
@@ -57,8 +58,7 @@ const MarathonPage: React.FC = () => {
   const [sparkles, setSparkles] = useState<Sparkle[]>([]);
   const [stravaData, setStravaData] = useState<StravaRunner[] | null>(null);
   const [stravaLoading, setStravaLoading] = useState(true);
-  const [totalKmCombined, setTotalKmCombined] =
-    useState<string>("Total: Loading");
+  const [totalKmCombined, setTotalKmCombined] = useState<string>("");
   const [fadeInterval, setFadeInterval] = useState<IntervalType>(null);
   const sparkleId = useRef(0);
 
@@ -238,22 +238,31 @@ const MarathonPage: React.FC = () => {
             ? "Go crush it! You've got this! 💪"
             : "4 Runners. 42.195km. 1 Destiny"}
         </div>
-        <div
-          id="total-km-combined"
-          dangerouslySetInnerHTML={{ __html: totalKmCombined }}
-        />
-        <CountdownTimer
-          countdown={countdown}
-          isMarathonDay={isMarathonDay}
-          onCountdownClick={handleCountdownClick}
-        />
-        <RunnersGrid
-          CARD_IDS={CARD_IDS}
-          images={images}
-          stravaData={stravaData}
-          stravaLoading={stravaLoading}
-          stravaImg={stravaImg}
-        />
+        <div className="section-spacing">
+          <div id="total-km-combined">
+            {stravaLoading ? (
+              <img src={spinner2Img} alt="Loading..." className="spinner-img" />
+            ) : (
+              <span dangerouslySetInnerHTML={{ __html: totalKmCombined }} />
+            )}
+          </div>
+        </div>
+        <div className="section-spacing">
+          <CountdownTimer
+            countdown={countdown}
+            isMarathonDay={isMarathonDay}
+            onCountdownClick={handleCountdownClick}
+          />
+        </div>
+        <div className="section-spacing">
+          <RunnersGrid
+            CARD_IDS={CARD_IDS}
+            images={images}
+            stravaData={stravaData}
+            stravaLoading={stravaLoading}
+            stravaImg={stravaImg}
+          />
+        </div>
         <Motivation
           isMarathonDay={isMarathonDay}
           motivationalMessage={motivationalMessage}

@@ -71,16 +71,32 @@
 
 .runner-result-area {
   margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 2.5em;
+  height: 2.5em;
+  justify-content: center;
 }
 
 .runner-time {
-  font-size: 1rem;
+  font-size: 0.8rem;
   color: #fff;
-  margin-top: 0.2rem;
+  margin-top: 0.4rem;
+  opacity: 0.8;
 }
 
 .spinner-img {
   width: 24px;
   height: 24px;
-  opacity: 0.5;
+  animation: spinner-rotate 1s linear infinite;
+}
+
+@keyframes spinner-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
