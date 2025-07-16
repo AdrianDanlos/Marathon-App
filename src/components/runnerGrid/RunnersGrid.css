@@ -32,11 +32,11 @@
 
 .runners-overlay-back {
   position: absolute;
-  top: 8px;
-  left: 16px;
+  top: 0px;
+  left: 8px;
   border: none;
   color: white;
-  font-size: 2rem;
+  font-size: 1.5rem;
   border-radius: 50%;
   width: 40px;
   height: 40px;

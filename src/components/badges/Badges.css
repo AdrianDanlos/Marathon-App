@@ -1,0 +1,24 @@
+.badges {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+  gap: 6px;
+  margin-top: 15px;
+}
+
+.badges img,
+.badges h1 {
+  height: 100%;
+  font-size: 13px;
+}
+
+.react-tooltip{
+  width: 300px !important;
+}
+
+.badgeTitle{
+  color: #fc4d02;
+}

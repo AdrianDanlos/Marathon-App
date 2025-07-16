@@ -1,6 +1,7 @@
 import { getClosestCityDistance } from "../../utils/cityDistances";
 import { getLevelInfo } from "../../utils/levelUtils";
 import type { AthleteData } from "../../utils/types";
+import { Badges } from "../badges/Badges";
 import { RunnerLevel } from "../runnerLevel/RunnerLevel";
 import "./RunnersOverlay.css";
 
@@ -15,7 +16,7 @@ export const RunnersOverlay: React.FC<RunnersOverlayProps> = ({
   onClose,
   stravaData,
 }) => {
-  const { totalKm, longestRun, fastestPace, totalTime } = stravaData;
+  const { totalKm, longestRun, fastestPace, totalTime, badges } = stravaData;
   const levelInfo = getLevelInfo(totalKm);
   const { from, to, country } = getClosestCityDistance(totalKm);
 
@@ -34,22 +35,30 @@ export const RunnersOverlay: React.FC<RunnersOverlayProps> = ({
             {levelInfo.levelName}
           </div>
           <RunnerLevel levelInfo={levelInfo} />
+          <Badges badges={badges} />
         </div>
         <div className="runners-overlay-stats">
           <div>
-            <strong>Longest Run:</strong> {longestRun} km
+            <strong>Longest Run:</strong>
+            <span>{longestRun} km</span>
           </div>
           <div>
-            <strong>Fastest Pace:</strong> {fastestPace} min/km
+            <strong>Fastest Pace:</strong>
+            <span>{fastestPace} min/km</span>
           </div>
           <div>
-            <strong>Total Time:</strong> {totalTime}
+            <strong>Total Time:</strong>
+            <span>{totalTime}</span>
           </div>
           <div>
-            <strong>Total KM:</strong> {totalKm} km
+            <strong>Total KM:</strong>
+            <span>{totalKm} km</span>
           </div>
           <div>
-            <strong>Distance:</strong> {from} → {to} {country && `(${country})`}
+            <strong>Distance:</strong>
+            <span>
+              {from} → {to} {country && `(${country})`}
+            </span>
           </div>
         </div>
       </div>

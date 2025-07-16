@@ -4,11 +4,12 @@
   justify-content: center;
   height: 100%;
   width: 100%;
-  gap: 100px;
+  gap: 70px;
+  padding: 2rem;
 }
 
 .runners-overlay-level-name {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 600;
   text-align: center;
   margin-bottom: 0;
@@ -23,14 +24,16 @@
 }
 
 .runners-overlay-stats strong {
-  color: #fc4c02;
+  color: #fc4c02d9;
   font-weight: 600;
-  min-width: 110px;
-  text-align: right;
+  margin-right: 4px;
+  text-shadow: 1px 1px #0000004d;
 }
 
 @media (max-width: 600px) {
   .runners-overlay-content {
     flex-direction: column;
+    gap: 50px;
+    padding: 1rem;
   }
 }

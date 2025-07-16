@@ -1,4 +1,5 @@
 import { AthleteData } from "../src/utils/types";
+import { badges } from "../src/utils/badges.js";
 
 const envVariables = {
   client_id: process.env.STRAVA_CLIENT_ID,
@@ -57,6 +58,8 @@ interface StravaActivity {
   max_heartrate: number;
   workout_type: number;
   suffer_score: number;
+  start_date_local: string;
+  total_elevation_gain: number;
 }
 
 interface AthleteResult {
@@ -68,7 +71,10 @@ interface AthleteTokens {
 }
 
 // This is a Vercel serverless function that fetches data from the Strava API. Vercel reads the default export function and runs it as a serverless function.
-export default async function handler(req: any, res: any): Promise<void> {
+export default async function handler(
+  req: unknown,
+  res: unknown
+): Promise<void> {
   /* INSTRUCTIONS TO ALLOW STRAVA TO ACCESS USER DATA
   const redirect_uri = process.env.STRAVA_REDIRECT_URI;
   // Every user we want to gather data for should visit this URL to authorize the app and then send us the CODE from the generated URL
@@ -94,6 +100,11 @@ export default async function handler(req: any, res: any): Promise<void> {
     joel: refresh_token_joel as string,
     asier: refresh_token_asier as string,
     hodei: refresh_token_hodei as string,
+  };
+
+  // Add type assertion for res where needed
+  const response = res as {
+    status: (code: number) => { json: (body: unknown) => void };
   };
 
   // Create an async function to process each athlete
@@ -156,6 +167,7 @@ export default async function handler(req: any, res: any): Promise<void> {
           totalTime: getTotalTime(activities),
           longestRun: getLongestRunEver(activities),
           fastestPace: getFastestPaceEver(activities),
+          badges: getBadges(activities),
         },
       };
     } catch (error) {
@@ -173,7 +185,7 @@ export default async function handler(req: any, res: any): Promise<void> {
     (result): result is AthleteResult => result !== null
   );
 
-  res.status(200).json({
+  response.status(200).json({
     activities,
   });
 }
@@ -226,4 +238,137 @@ const getFastestPaceEver = (activities: StravaActivity[]): number => {
   const paces = runs.map((act) => act.moving_time / (act.distance / 1000) / 60); // min/km
   const fastest = Math.min(...paces);
   return Math.round(fastest * 100) / 100;
+};
+
+const getBadges = (runs: StravaActivity[]): string[] => {
+  const badgeResults: string[] = [];
+
+  // Early Bird: any run started between 3:00 AM and 8:00 AM (local time)
+  if (
+    runs.some((run) => {
+      const hour = new Date(run.start_date_local || run.start_date).getHours();
+      return hour >= 3 && hour < 8;
+    })
+  ) {
+    badgeResults.push(badges.earlyBird.key);
+  }
+
+  // Night Owl: any run started after 10:00 PM (local time)
+  if (
+    runs.some((act) => {
+      const d = new Date(act.start_date_local || act.start_date);
+      return d.getHours() >= 22;
+    })
+  ) {
+    badgeResults.push(badges.nightOwl.key);
+  }
+
+  // Marathon Milestone: total distance ever >= 42.195 km
+  const totalKmEver = runs.reduce((sum, act) => sum + act.distance / 1000, 0);
+  if (totalKmEver >= 42.195) {
+    badgeResults.push(badges.marathonMilestone.key);
+  }
+
+  // Half Marathon Race: any run >= 21 km in a session
+  if (runs.some((act) => act.distance / 1000 >= 21)) {
+    badgeResults.push(badges.halfMarathonRace.key);
+  }
+
+  // Marathon Race: any run >= 42 km in a session
+  if (runs.some((act) => act.distance / 1000 >= 42)) {
+    badgeResults.push(badges.marathonRace.key);
+  }
+
+  // Climber: any run with total_elevation_gain >= 200m
+  if (
+    runs.some(
+      (act) => act.total_elevation_gain && act.total_elevation_gain >= 200
+    )
+  ) {
+    badgeResults.push(badges.climber.key);
+  }
+
+  // Consistency King: ran on 5 different days in a single week
+  if (
+    (() => {
+      const weekMap: Record<string, Set<string>> = {};
+      runs.forEach((act) => {
+        const d = new Date(act.start_date_local || act.start_date);
+        const year = d.getFullYear();
+        const week = getWeekNumber(d);
+        const key = `${year}-W${week}`;
+        if (!weekMap[key]) weekMap[key] = new Set();
+        weekMap[key].add(d.toDateString());
+      });
+      return Object.values(weekMap).some((days) => days.size >= 5);
+    })()
+  ) {
+    badgeResults.push(badges.consistencyKing.key);
+  }
+
+  // Monthly Ultramaraton: 100km in a single calendar month
+  if (
+    (() => {
+      const monthMap: Record<string, number> = {};
+      runs.forEach((act) => {
+        const d = new Date(act.start_date_local || act.start_date);
+        const key = `${d.getFullYear()}-${d.getMonth()}`;
+        monthMap[key] = (monthMap[key] || 0) + act.distance / 1000;
+      });
+      return Object.values(monthMap).some((km) => km >= 100);
+    })()
+  ) {
+    badgeResults.push(badges.monthlyUltramaraton.key);
+  }
+
+  // Sunset Chaser: finished a run between 7–9 PM (local time)
+  if (
+    runs.some((act) => {
+      const start = new Date(act.start_date_local || act.start_date);
+      const end = new Date(start.getTime() + act.moving_time * 1000);
+      const hour = end.getHours();
+      return hour >= 19 && hour < 21;
+    })
+  ) {
+    badgeResults.push(badges.sunsetChaser.key);
+  }
+
+  // Weekend Warrior: ran on both Saturday and Sunday in the same weekend
+  if (
+    (() => {
+      const weekMap: Record<string, Set<number>> = {};
+      runs.forEach((act) => {
+        const d = new Date(act.start_date_local || act.start_date);
+        const year = d.getFullYear();
+        const week = getWeekNumber(d);
+        const key = `${year}-W${week}`;
+        if (!weekMap[key]) weekMap[key] = new Set();
+        weekMap[key].add(d.getDay());
+      });
+      return Object.values(weekMap).some((days) => days.has(0) && days.has(6));
+    })()
+  ) {
+    badgeResults.push(badges.weekendWarrior.key);
+  }
+
+  // Continental Cruiser: total distance ever >= 500 km
+  if (totalKmEver >= 500) {
+    badgeResults.push(badges.continentalCruiser.key);
+  }
+
+  // Transcontinental Titan: total distance ever >= 1000 km
+  if (totalKmEver >= 1000) {
+    badgeResults.push(badges.transcontinentalTitan.key);
+  }
+
+  // Helper: get ISO week number
+  function getWeekNumber(d: Date) {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+  }
+
+  return badgeResults;
 };

@@ -5,4 +5,5 @@ export interface AthleteData {
   fastestPace: number;
   longestRun: number;
   totalTime: string;
+  badges: string[];
 }
