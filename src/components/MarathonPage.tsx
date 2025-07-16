@@ -1,6 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import trackImg from "@assets/images/track.png";
-import song from "@assets/audio/song.mp3";
 import CountdownTimer from "./countdownTimer/CountdownTimer";
 import RunnersGrid from "./runnerGrid/RunnersGrid";
 import Motivation from "./motivation/Motivation";
@@ -9,7 +8,6 @@ import spinner2Img from "@assets/images/spinner2.png";
 import type { AthleteData, Athlete } from "../utils/types";
 
 const MarathonPage: React.FC = () => {
-  const audioRef = useRef<HTMLAudioElement>(null);
   const [stravaData, setStravaData] = useState<Athlete[] | null>(null);
   const [stravaLoading, setStravaLoading] = useState(true);
   const [totalKm, setTotalKm] = useState<number | null>(null);
@@ -81,7 +79,7 @@ const MarathonPage: React.FC = () => {
           <RunnersGrid stravaData={stravaData} stravaLoading={stravaLoading} />
         </div>
         <Motivation />
-        <TrackLink trackImg={trackImg} audioRef={audioRef} song={song} />
+        <TrackLink trackImg={trackImg} />
       </div>
     </div>
   );
