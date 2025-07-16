@@ -3,7 +3,6 @@ import asierImg from "@assets/images/asier.jpg";
 import hodeiImg from "@assets/images/hodei.jpg";
 import joelImg from "@assets/images/joel.jpg";
 import adrianImg from "@assets/images/adrian.jpg";
-import stravaImg from "@assets/images/strava.png";
 import trackImg from "@assets/images/track.png";
 import song from "@assets/audio/song.mp3";
 import CountdownTimer from "./countdownTimer/CountdownTimer";
@@ -253,7 +252,6 @@ const MarathonPage: React.FC = () => {
             images={images}
             stravaData={stravaData}
             stravaLoading={stravaLoading}
-            stravaImg={stravaImg}
           />
         </div>
         <Motivation
