@@ -1,3 +1,5 @@
+import { AthleteData } from "../src/utils/types";
+
 const envVariables = {
   client_id: process.env.STRAVA_CLIENT_ID,
   client_secret: process.env.STRAVA_CLIENT_SECRET,
@@ -57,13 +59,6 @@ interface StravaActivity {
   suffer_score: number;
 }
 
-interface AthleteData {
-  totalKm: number;
-  totalTime: {
-    time: string;
-  };
-}
-
 interface AthleteResult {
   [athleteName: string]: AthleteData;
 }
@@ -73,10 +68,7 @@ interface AthleteTokens {
 }
 
 // This is a Vercel serverless function that fetches data from the Strava API. Vercel reads the default export function and runs it as a serverless function.
-export default async function handler(
-  req: any,
-  res: any
-): Promise<void> {
+export default async function handler(req: any, res: any): Promise<void> {
   /* INSTRUCTIONS TO ALLOW STRAVA TO ACCESS USER DATA
   const redirect_uri = process.env.STRAVA_REDIRECT_URI;
   // Every user we want to gather data for should visit this URL to authorize the app and then send us the CODE from the generated URL
@@ -156,11 +148,14 @@ export default async function handler(
       }
 
       const result: StravaActivity[] = await activitiesRes.json();
+      const activities = getActivitiesSinceJune(result);
 
       return {
         [athleteName]: {
-          totalKm: getTotalKmSinceJune(result),
-          totalTime: getTotalTimeSinceJune(result),
+          totalKm: getTotalKm(activities),
+          totalTime: getTotalTime(activities),
+          longestRun: getLongestRunEver(activities),
+          fastestPace: getFastestPaceEver(activities),
         },
       };
     } catch (error) {
@@ -183,36 +178,20 @@ export default async function handler(
   });
 }
 
-const getTotalKmSinceJune = (activities: StravaActivity[]): number => {
-  const runsSinceJune = getActivitiesSinceJune(activities);
-
-  const totalKm = runsSinceJune.reduce(
-    (sum, act) => sum + act.distance / 1000,
-    0
-  );
-
-  const totalKmRounded = Math.round(totalKm * 100) / 100;
-
-  return totalKmRounded;
+const getTotalKm = (activities: StravaActivity[]): number => {
+  const totalKm = activities.reduce((sum, act) => sum + act.distance / 1000, 0);
+  return Math.round(totalKm * 100) / 100;
 };
 
-const getTotalTimeSinceJune = (
-  activities: StravaActivity[]
-): { time: string } => {
-  const runsSinceJune = getActivitiesSinceJune(activities);
-
-  const totalSeconds = runsSinceJune.reduce(
+const getTotalTime = (activities: StravaActivity[]): string => {
+  const totalSeconds = activities.reduce(
     (sum, act) => sum + act.moving_time,
     0
   );
-
   // Convert seconds to hours, minutes, seconds
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
-
-  return {
-    time: `${hours}h ${minutes}m`,
-  };
+  return `${hours}h ${minutes}m`;
 };
 
 const getActivitiesSinceJune = (
@@ -221,9 +200,30 @@ const getActivitiesSinceJune = (
   const now = new Date();
   const year = now.getFullYear();
   const juneFirst = new Date(`${year}-06-01T00:00:00Z`);
-  const runsSinceJune = activities.filter(
+  return activities.filter(
     (act) => act.type === "Run" && new Date(act.start_date) >= juneFirst
   );
+};
 
-  return runsSinceJune;
+// Returns the longest run ever (in km)
+const getLongestRunEver = (activities: StravaActivity[]): number => {
+  const runs = activities.filter((act) => act.type === "Run");
+  if (runs.length === 0) return 0;
+  const longest = runs.reduce(
+    (max, act) => (act.distance > max.distance ? act : max),
+    runs[0]
+  );
+  return Math.round((longest.distance / 1000) * 100) / 100; // km
+};
+
+// Returns the fastest pace ever (min/km)
+const getFastestPaceEver = (activities: StravaActivity[]): number => {
+  const runs = activities.filter(
+    (act) => act.type === "Run" && act.distance > 0 && act.moving_time > 0
+  );
+  if (runs.length === 0) return 0;
+  // pace in min/km = (moving_time in seconds) / (distance in meters) * 1000 / 60
+  const paces = runs.map((act) => act.moving_time / (act.distance / 1000) / 60); // min/km
+  const fastest = Math.min(...paces);
+  return Math.round(fastest * 100) / 100;
 };

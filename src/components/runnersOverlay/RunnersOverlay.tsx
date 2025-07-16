@@ -1,12 +1,12 @@
 import { getLevelInfo, getLevelName } from "../../utils/levelUtils";
-import type { StravaRunner } from "../../utils/types";
+import type { Athlete } from "../../utils/types";
 import { RunnerLevel } from "../runnerLevel/RunnerLevel";
 
 interface RunnersOverlayProps {
   show: boolean;
   animate: boolean;
   runnerKm: number;
-  stravaData: StravaRunner[] | null;
+  stravaData: Athlete[] | null;
   onClose: () => void;
 }
 

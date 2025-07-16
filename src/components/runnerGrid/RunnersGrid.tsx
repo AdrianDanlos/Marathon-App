@@ -2,29 +2,31 @@ import React, { useState, useEffect } from "react";
 import "./RunnersGrid.css";
 import RunnerCard from "../runnerCard/RunnerCard";
 import { RunnersOverlay } from "../runnersOverlay/RunnersOverlay";
-
-interface StravaPerson {
-  totalKm: number;
-  totalTime: { time: string } | string;
-}
-type StravaRunner = { [key: string]: StravaPerson };
+import asierImg from "@assets/images/asier.jpg";
+import hodeiImg from "@assets/images/hodei.jpg";
+import joelImg from "@assets/images/joel.jpg";
+import adrianImg from "@assets/images/adrian.jpg";
+import type { Athlete, AthleteData } from "../../utils/types";
 
 interface RunnersGridProps {
-  CARD_IDS: string[];
-  images: { [key: string]: string };
-  stravaData: StravaRunner[] | null;
+  stravaData: Athlete[] | null;
   stravaLoading: boolean;
 }
 
 const RunnersGrid: React.FC<RunnersGridProps> = ({
-  CARD_IDS,
-  images,
   stravaData,
   stravaLoading,
 }) => {
   const [showOverlay, setShowOverlay] = useState(false);
   const [animateOverlay, setAnimateOverlay] = useState(false);
   const [selectedRunnerKm, setSelectedRunnerKm] = useState<number | null>(null);
+
+  const runners = [
+    { id: "asier", img: asierImg },
+    { id: "hodei", img: hodeiImg },
+    { id: "joel", img: joelImg },
+    { id: "adrian", img: adrianImg },
+  ];
 
   useEffect(() => {
     if (showOverlay) {
@@ -46,39 +48,23 @@ const RunnersGrid: React.FC<RunnersGridProps> = ({
           stravaData={stravaData}
         />
         {!showOverlay &&
-          CARD_IDS.map((cardId) => {
-            let runnerKm: number | null = null;
-            let runnerTime: string | null = null;
-            if (stravaData) {
-              const runnerObj = stravaData.find(
-                (item) => Object.keys(item)[0] === cardId
-              );
-              if (runnerObj) {
-                const person = Object.values(runnerObj)[0];
-                if (person) {
-                  runnerKm = person.totalKm;
-                  if (typeof person.totalTime === "string") {
-                    runnerTime = person.totalTime;
-                  } else if (
-                    typeof person.totalTime === "object" &&
-                    person.totalTime !== null &&
-                    "time" in person.totalTime
-                  ) {
-                    runnerTime = person.totalTime.time;
-                  }
-                }
-              }
-            }
+          runners.map(({ id, img }) => {
+            const runnerStats = stravaData?.find(
+              (item) => Object.keys(item)[0] === id
+            )?.[id] as AthleteData | undefined;
+
+            const totalKm = runnerStats?.totalKm ?? 0;
+            const totalTime = runnerStats?.totalTime ?? '0';
             return (
               <RunnerCard
-                key={cardId}
-                cardId={cardId}
-                img={images[cardId]}
-                runnerKm={runnerKm}
-                runnerTime={runnerTime}
+                key={id}
+                cardId={id}
+                img={img}
+                runnerKm={totalKm}
+                runnerTime={totalTime}
                 stravaLoading={stravaLoading}
                 onClick={() => {
-                  setSelectedRunnerKm(runnerKm);
+                  setSelectedRunnerKm(totalKm);
                   setShowOverlay(true);
                 }}
               />

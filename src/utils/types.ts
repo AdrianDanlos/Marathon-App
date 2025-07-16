@@ -1,5 +1,8 @@
-export type StravaPerson = {
+export type Athlete = { [key: string]: AthleteData };
+
+export interface AthleteData {
   totalKm: number;
-  totalTime: { time: string } | string;
-};
-export type StravaRunner = { [key: string]: StravaPerson };
+  fastestPace: number;
+  longestRun: number;
+  totalTime: string;
+}
