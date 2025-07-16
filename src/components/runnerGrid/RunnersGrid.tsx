@@ -43,6 +43,7 @@ const RunnersGrid: React.FC<RunnersGridProps> = ({
           animate={animateOverlay}
           onClose={() => setShowOverlay(false)}
           runnerKm={selectedRunnerKm as number}
+          stravaData={stravaData}
         />
         {!showOverlay &&
           CARD_IDS.map((cardId) => {

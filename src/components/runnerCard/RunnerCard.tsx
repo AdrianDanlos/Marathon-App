@@ -2,7 +2,7 @@ import React from "react";
 import "./RunnerCard.css";
 import spinnerImg from "../../assets/images/spinner.png";
 import { RunnerLevel } from "../runnerLevel/RunnerLevel";
-import { getLevelInfo } from "../../levelUtils";
+import { getLevelInfo } from "../../utils/levelUtils";
 
 interface RunnerCardProps {
   cardId: string;
@@ -12,8 +12,6 @@ interface RunnerCardProps {
   stravaLoading: boolean;
   onClick?: () => void;
 }
-
-
 
 const RunnerCard: React.FC<RunnerCardProps> = ({
   cardId,

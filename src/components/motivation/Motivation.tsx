@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from "react";
 import "./Motivation.css";
 
-type MotivationProps = {
-  motivationalMessage: string;
-  friendsMention: string;
-};
+const MOTIVATIONAL_MESSAGES = [
+  "You've got this! 🚀",
+  "Stay strong! 💪",
+  "Keep pushing! 🔥",
+  "You're unstoppable! ⚡",
+  "Dream big! 🏆",
+  "You're a champion! 🏃‍♂️",
+];
 
-const Motivation: React.FC<MotivationProps> = ({ motivationalMessage, friendsMention }) => {
+const Motivation: React.FC = () => {
+  const [motivationIndex, setMotivationIndex] = useState(0);
+  const motivationalMessage = MOTIVATIONAL_MESSAGES[motivationIndex];
+  const friendsMention =
+    "Shoutout to the marathon squad! Let's make this epic!";
+
   const [displayedMessage, setDisplayedMessage] = useState(motivationalMessage);
   const [fade, setFade] = useState(true);
 
@@ -19,14 +28,24 @@ const Motivation: React.FC<MotivationProps> = ({ motivationalMessage, friendsMen
     return () => clearTimeout(timeout);
   }, [motivationalMessage]);
 
+  // Motivational message cycling
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMotivationIndex((prev) => (prev + 1) % MOTIVATIONAL_MESSAGES.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="motivation">
-      <div className={`motivation-text fade-motivation${fade ? " fade-in" : " fade-out"}`}>
+      <div
+        className={`motivation-text fade-motivation${
+          fade ? " fade-in" : " fade-out"
+        }`}
+      >
         {displayedMessage}
       </div>
-      <div className="friends-mention">
-        {friendsMention}
-      </div>
+      <div className="friends-mention">{friendsMention}</div>
     </div>
   );
 };

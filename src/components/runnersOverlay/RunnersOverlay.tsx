@@ -1,10 +1,12 @@
-import { getLevelInfo, getLevelName } from "../../levelUtils";
+import { getLevelInfo, getLevelName } from "../../utils/levelUtils";
+import type { StravaRunner } from "../../utils/types";
 import { RunnerLevel } from "../runnerLevel/RunnerLevel";
 
 interface RunnersOverlayProps {
   show: boolean;
   animate: boolean;
   runnerKm: number;
+  stravaData: StravaRunner[] | null;
   onClose: () => void;
 }
 
@@ -13,8 +15,11 @@ export const RunnersOverlay: React.FC<RunnersOverlayProps> = ({
   animate,
   onClose,
   runnerKm,
+  stravaData,
 }) => {
   if (!show) return null;
+
+  console.log('stravaData :>> ', stravaData);
   const { level, progress, nextLevelKm } = getLevelInfo(runnerKm);
 
   return (

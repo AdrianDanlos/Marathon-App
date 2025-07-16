@@ -10,88 +10,20 @@ import RunnersGrid from "./runnerGrid/RunnersGrid";
 import Motivation from "./motivation/Motivation";
 import TrackLink from "./trackLink/TrackLink";
 import spinner2Img from "@assets/images/spinner2.png";
-
-const TARGET_DATE = new Date("March 16, 2026 00:00:00").getTime();
-const CARD_IDS = ["asier", "hodei", "joel", "adrian"];
-const MOTIVATIONAL_MESSAGES = [
-  "You've got this! 🚀",
-  "Stay strong! 💪",
-  "Keep pushing! 🔥",
-  "You're unstoppable! ⚡",
-  "Dream big! 🏆",
-  "You're a champion! 🏃‍♂️",
-];
-
-type StravaPerson = {
-  totalKm: number;
-  totalTime: { time: string } | string;
-};
-type StravaRunner = { [key: string]: StravaPerson };
-
-type CountdownState = {
-  days: string;
-  hours: string;
-  minutes: string;
-  seconds: string;
-  isMarathonDay: boolean;
-};
+import type { StravaRunner } from "../utils/types";
 
 type IntervalType = ReturnType<typeof setInterval> | null;
 
+const CARD_IDS = ["asier", "hodei", "joel", "adrian"];
+
 const MarathonPage: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [countdown, setCountdown] = useState<CountdownState>({
-    days: "00",
-    hours: "00",
-    minutes: "00",
-    seconds: "00",
-    isMarathonDay: false,
-  });
-  const [motivationIndex, setMotivationIndex] = useState(0);
+
   const [stravaData, setStravaData] = useState<StravaRunner[] | null>(null);
   const [stravaLoading, setStravaLoading] = useState(true);
   const [totalKm, setTotalKm] = useState<number | null>(null);
   const [totalTime, setTotalTime] = useState<string>("");
   const [fadeInterval, setFadeInterval] = useState<IntervalType>(null);
-
-  // Countdown timer
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const distance = TARGET_DATE - now;
-      if (distance < 0) {
-        setCountdown((prev) => ({ ...prev, isMarathonDay: true }));
-        clearInterval(interval);
-        return;
-      }
-      setCountdown({
-        days: String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(
-          2,
-          "0"
-        ),
-        hours: String(
-          Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-        ).padStart(2, "0"),
-        minutes: String(
-          Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
-        ).padStart(2, "0"),
-        seconds: String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(
-          2,
-          "0"
-        ),
-        isMarathonDay: false,
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Motivational message cycling
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setMotivationIndex((prev) => (prev + 1) % MOTIVATIONAL_MESSAGES.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
 
   // Strava data fetching (stubbed, adjust endpoint as needed)
   useEffect(() => {
@@ -174,19 +106,6 @@ const MarathonPage: React.FC = () => {
     }
   };
 
-  // Interactive click effect for countdown items
-  const handleCountdownClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = e.currentTarget;
-    el.style.transform = "scale(0.95)";
-    setTimeout(() => {
-      el.style.transform = "scale(1)";
-    }, 150);
-  };
-
-  const motivationalMessage = MOTIVATIONAL_MESSAGES[motivationIndex];
-  const friendsMention =
-    "Shoutout to the marathon squad! Let's make this epic!";
-
   const images = {
     asier: asierImg,
     hodei: hodeiImg,
@@ -214,10 +133,7 @@ const MarathonPage: React.FC = () => {
           </div>
         </div>
         <div className="section-spacing">
-          <CountdownTimer
-            countdown={countdown}
-            onCountdownClick={handleCountdownClick}
-          />
+          <CountdownTimer />
         </div>
         <div className="section-spacing">
           <RunnersGrid
@@ -227,10 +143,7 @@ const MarathonPage: React.FC = () => {
             stravaLoading={stravaLoading}
           />
         </div>
-        <Motivation
-          motivationalMessage={motivationalMessage}
-          friendsMention={friendsMention}
-        />
+        <Motivation />
         <TrackLink
           trackImg={trackImg}
           handleMapMouseEnter={handleMapMouseEnter}
