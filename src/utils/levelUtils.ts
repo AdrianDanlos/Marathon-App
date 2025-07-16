@@ -1,8 +1,15 @@
-export const getLevelInfo = (km: number | null) => {
-  if (km === null || isNaN(km) || km < 0) {
-    return { level: 1, progress: 0, nextLevelKm: 5, currentLevelKm: 0 };
-  }
+export type LevelInfo = {
+  level: number;
+  progress: number;
+  nextLevelKm: number;
+  currentLevelKm: number;
+  levelName: string;
+  kmInCurrentLevel: number;
+  kmNeededForLevel: number;
+  totalKm: number;
+};
 
+export const getLevelInfo = (km: number): LevelInfo => {
   const base = 5;
   const factor = 1.1;
   let level = 1;
@@ -29,6 +36,8 @@ export const getLevelInfo = (km: number | null) => {
     currentLevelKm,
     kmInCurrentLevel: Math.round(kmInCurrentLevel * 100) / 100,
     kmNeededForLevel: Math.round(kmNeededForLevel * 100) / 100,
+    levelName: getLevelName(level),
+    totalKm: km,
   };
 };
 
@@ -75,5 +84,5 @@ export const runnerLevelNames = [
   "Corredor Cuántico", // Level 40
 ];
 
-export const getLevelName = (level: number): string =>
+const getLevelName = (level: number): string =>
   runnerLevelNames[level - 1] || "Más Allá de la Realidad";

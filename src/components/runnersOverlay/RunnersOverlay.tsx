@@ -1,26 +1,21 @@
-import { getLevelInfo, getLevelName } from "../../utils/levelUtils";
-import type { Athlete } from "../../utils/types";
+import { getLevelInfo } from "../../utils/levelUtils";
+import type { AthleteData } from "../../utils/types";
 import { RunnerLevel } from "../runnerLevel/RunnerLevel";
+import "./RunnersOverlay.css";
 
 interface RunnersOverlayProps {
-  show: boolean;
   animate: boolean;
-  runnerKm: number;
-  stravaData: Athlete[] | null;
+  stravaData: AthleteData;
   onClose: () => void;
 }
 
 export const RunnersOverlay: React.FC<RunnersOverlayProps> = ({
-  show,
   animate,
   onClose,
-  runnerKm,
   stravaData,
 }) => {
-  if (!show) return null;
-
-  console.log('stravaData :>> ', stravaData);
-  const { level, progress, nextLevelKm } = getLevelInfo(runnerKm);
+  const levelInfo = getLevelInfo(stravaData.totalKm);
+  const { totalKm, longestRun, fastestPace, totalTime } = stravaData;
 
   return (
     <div className={`runners-overlay${animate ? " show" : ""}`}>
@@ -32,13 +27,26 @@ export const RunnersOverlay: React.FC<RunnersOverlayProps> = ({
         ←
       </button>
       <div className="runners-overlay-content">
-        <div className="runners-overlay-level-name">{getLevelName(level)}</div>
-        <RunnerLevel
-          level={level}
-          progress={progress}
-          nextLevelKm={nextLevelKm}
-          runnerKm={runnerKm}
-        />
+        <div>
+          <div className="runners-overlay-level-name">
+            {levelInfo.levelName}
+          </div>
+          <RunnerLevel levelInfo={levelInfo} />
+        </div>
+        <div className="runners-overlay-stats">
+          <div>
+            <strong>Longest Run:</strong> {longestRun} km
+          </div>
+          <div>
+            <strong>Fastest Pace:</strong> {fastestPace} min/km
+          </div>
+          <div>
+            <strong>Total KM:</strong> {totalKm}
+          </div>
+          <div>
+            <strong>Total Time:</strong> {totalTime}
+          </div>
+        </div>
       </div>
     </div>
   );

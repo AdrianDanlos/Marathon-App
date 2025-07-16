@@ -3,25 +3,21 @@ import "./RunnerCard.css";
 import spinnerImg from "../../assets/images/spinner.png";
 import { RunnerLevel } from "../runnerLevel/RunnerLevel";
 import { getLevelInfo } from "../../utils/levelUtils";
+import type { AthleteData } from "../../utils/types";
 
 interface RunnerCardProps {
   cardId: string;
   img: string;
-  runnerKm: number | null;
-  runnerTime: string | null;
-  stravaLoading: boolean;
+  stravaData: AthleteData | null;
   onClick?: () => void;
 }
 
 const RunnerCard: React.FC<RunnerCardProps> = ({
   cardId,
   img,
-  runnerKm,
-  runnerTime,
-  stravaLoading,
+  stravaData,
   onClick,
 }) => {
-  const { level, progress, nextLevelKm } = getLevelInfo(runnerKm);
   return (
     <div
       id={cardId}
@@ -31,24 +27,15 @@ const RunnerCard: React.FC<RunnerCardProps> = ({
     >
       <img src={img} alt={cardId} className="runner-image" />
       <div className="runner-result-area">
-        {stravaLoading ? (
+        {!stravaData ? (
           <img src={spinnerImg} alt="Loading..." className="spinner-img" />
         ) : (
           <>
-            {runnerKm !== null && (
-              <div id={`${cardId}-totalKm`}>{runnerKm} KM</div>
-            )}
-            {runnerTime && (
-              <div id={`${cardId}-totalTime`} className="runner-time">
-                {runnerTime}
-              </div>
-            )}
-            <RunnerLevel
-              level={level}
-              progress={progress}
-              nextLevelKm={nextLevelKm}
-              runnerKm={runnerKm}
-            />
+            <div id={`${cardId}-totalKm`}>{stravaData.totalKm} KM</div>
+            <div id={`${cardId}-totalTime`} className="runner-time">
+              {stravaData.totalTime}
+            </div>
+            <RunnerLevel levelInfo={getLevelInfo(stravaData.totalKm)} />
           </>
         )}
       </div>
