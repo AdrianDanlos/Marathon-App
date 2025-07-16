@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./RunnersGrid.css";
 import RunnerCard from "../runnerCard/RunnerCard";
+import { RunnersOverlay } from "../runnersOverlay/RunnersOverlay";
 
 interface StravaPerson {
   totalKm: number;
@@ -21,32 +22,29 @@ const RunnersGrid: React.FC<RunnersGridProps> = ({
   stravaData,
   stravaLoading,
 }) => {
-  const [showHello, setShowHello] = useState(false);
-  const [animateHello, setAnimateHello] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [animateOverlay, setAnimateOverlay] = useState(false);
+  const [selectedRunnerKm, setSelectedRunnerKm] = useState<number | null>(null);
 
   useEffect(() => {
-    if (showHello) {
-      setTimeout(() => setAnimateHello(true), 10);
+    if (showOverlay) {
+      setTimeout(() => setAnimateOverlay(true), 10);
     } else {
-      setAnimateHello(false);
+      setAnimateOverlay(false);
+      setSelectedRunnerKm(null);
     }
-  }, [showHello]);
+  }, [showOverlay]);
 
   return (
     <div className="runners-section">
       <div className="runners-grid" style={{ position: "relative" }}>
-        {showHello ? (
-          <div className={`runners-overlay${animateHello ? " show" : ""}`}>
-            <button
-              className="runners-overlay-back"
-              onClick={() => setShowHello(false)}
-              aria-label="Back to runners"
-            >
-              ←
-            </button>
-            <div className="runners-overlay-text">hello world</div>
-          </div>
-        ) : (
+        <RunnersOverlay
+          show={showOverlay}
+          animate={animateOverlay}
+          onClose={() => setShowOverlay(false)}
+          runnerKm={selectedRunnerKm as number}
+        />
+        {!showOverlay &&
           CARD_IDS.map((cardId) => {
             let runnerKm: number | null = null;
             let runnerTime: string | null = null;
@@ -78,11 +76,13 @@ const RunnersGrid: React.FC<RunnersGridProps> = ({
                 runnerKm={runnerKm}
                 runnerTime={runnerTime}
                 stravaLoading={stravaLoading}
-                onClick={() => setShowHello(true)}
+                onClick={() => {
+                  setSelectedRunnerKm(runnerKm);
+                  setShowOverlay(true);
+                }}
               />
             );
-          })
-        )}
+          })}
       </div>
     </div>
   );
