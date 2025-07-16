@@ -6,7 +6,6 @@ import adrianImg from "@assets/images/adrian.jpg";
 import trackImg from "@assets/images/track.png";
 import song from "@assets/audio/song.mp3";
 import CountdownTimer from "./countdownTimer/CountdownTimer";
-import Sparkles from "./sparkles/Sparkles";
 import RunnersGrid from "./runnerGrid/RunnersGrid";
 import Motivation from "./motivation/Motivation";
 import TrackLink from "./trackLink/TrackLink";
@@ -23,8 +22,6 @@ const MOTIVATIONAL_MESSAGES = [
   "You're a champion! 🏃‍♂️",
 ];
 
-const getRandomPercent = () => `${Math.random() * 100}%`;
-
 type StravaPerson = {
   totalKm: number;
   totalTime: { time: string } | string;
@@ -39,8 +36,6 @@ type CountdownState = {
   isMarathonDay: boolean;
 };
 
-type Sparkle = { id: number; left: string; top: string };
-
 type IntervalType = ReturnType<typeof setInterval> | null;
 
 const MarathonPage: React.FC = () => {
@@ -53,13 +48,11 @@ const MarathonPage: React.FC = () => {
     isMarathonDay: false,
   });
   const [motivationIndex, setMotivationIndex] = useState(0);
-  const [sparkles, setSparkles] = useState<Sparkle[]>([]);
   const [stravaData, setStravaData] = useState<StravaRunner[] | null>(null);
   const [stravaLoading, setStravaLoading] = useState(true);
   const [totalKm, setTotalKm] = useState<number | null>(null);
   const [totalTime, setTotalTime] = useState<string>("");
   const [fadeInterval, setFadeInterval] = useState<IntervalType>(null);
-  const sparkleId = useRef(0);
 
   // Countdown timer
   useEffect(() => {
@@ -96,25 +89,6 @@ const MarathonPage: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setMotivationIndex((prev) => (prev + 1) % MOTIVATIONAL_MESSAGES.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Sparkle effect
-  useEffect(() => {
-    const interval = setInterval(() => {
-      sparkleId.current += 1;
-      setSparkles((prev) => [
-        ...prev,
-        {
-          id: sparkleId.current,
-          left: getRandomPercent(),
-          top: getRandomPercent(),
-        },
-      ]);
-      setTimeout(() => {
-        setSparkles((prev) => prev.slice(1));
-      }, 2000);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
@@ -222,7 +196,6 @@ const MarathonPage: React.FC = () => {
 
   return (
     <div className="container" style={{ position: "relative" }}>
-      <Sparkles sparkles={sparkles} />
       <div className="content">
         <h1 className="title">{"BARCELONA MARATHON 2026!"}</h1>
         <div className="subtitle">{"4 Runners. 42.195km. 1 Destiny"}</div>

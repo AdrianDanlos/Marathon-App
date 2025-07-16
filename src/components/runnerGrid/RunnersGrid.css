@@ -5,6 +5,7 @@
   gap: 2rem;
   flex-wrap: wrap;
   height: 250px;
+  z-index: 1;
 }
 
 .runners-overlay {
@@ -45,4 +46,10 @@
   justify-content: center;
   z-index: 11;
   background: none;
+}
+
+@media (max-width: 600px) {
+  .runners-grid {
+    height: 300px;
+  }
 }
