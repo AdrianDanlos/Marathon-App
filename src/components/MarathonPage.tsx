@@ -1,18 +1,17 @@
 import React, { useRef, useEffect, useState } from "react";
-import "./../index.css";
-import asierImg from "./../assets/images/asier.jpg";
-import hodeiImg from "./../assets/images/hodei.jpg";
-import joelImg from "./../assets/images/joel.jpg";
-import adrianImg from "./../assets/images/adrian.jpg";
-import stravaImg from "./../assets/images/strava.png";
-import trackImg from "./../assets/images/track.png";
-import song from "./../assets/audio/song.mp3";
+import asierImg from "@assets/images/asier.jpg";
+import hodeiImg from "@assets/images/hodei.jpg";
+import joelImg from "@assets/images/joel.jpg";
+import adrianImg from "@assets/images/adrian.jpg";
+import stravaImg from "@assets/images/strava.png";
+import trackImg from "@assets/images/track.png";
+import song from "@assets/audio/song.mp3";
 import CountdownTimer from "./countdownTimer/CountdownTimer";
 import Sparkles from "./sparkles/Sparkles";
 import RunnersGrid from "./runnerGrid/RunnersGrid";
 import Motivation from "./motivation/Motivation";
 import TrackLink from "./trackLink/TrackLink";
-import spinner2Img from "../assets/images/spinner2.png";
+import spinner2Img from "@assets/images/spinner2.png";
 
 const TARGET_DATE = new Date("March 16, 2026 00:00:00").getTime();
 const CARD_IDS = ["asier", "hodei", "joel", "adrian"];
@@ -58,7 +57,8 @@ const MarathonPage: React.FC = () => {
   const [sparkles, setSparkles] = useState<Sparkle[]>([]);
   const [stravaData, setStravaData] = useState<StravaRunner[] | null>(null);
   const [stravaLoading, setStravaLoading] = useState(true);
-  const [totalKmCombined, setTotalKmCombined] = useState<string>("");
+  const [totalKm, setTotalKm] = useState<number | null>(null);
+  const [totalTime, setTotalTime] = useState<string>("");
   const [fadeInterval, setFadeInterval] = useState<IntervalType>(null);
   const sparkleId = useRef(0);
 
@@ -155,13 +155,13 @@ const MarathonPage: React.FC = () => {
         const totalHours = Math.floor(totalMinutes / 60);
         const remainingMinutes = totalMinutes % 60;
         const totalTime = `${totalHours}h ${remainingMinutes}m`;
-        setTotalKmCombined(
-          `<span class="total-distance">${totalKm} KM</span> <span class="total-time">${totalTime}</span>`
-        );
+        setTotalKm(totalKm);
+        setTotalTime(totalTime);
       })
       .catch(() => {
         setStravaLoading(false);
-        setTotalKmCombined("Total: Error");
+        setTotalKm(null);
+        setTotalTime("");
       });
   }, []);
 
@@ -210,14 +210,9 @@ const MarathonPage: React.FC = () => {
     }, 150);
   };
 
-  // Marathon day content
-  const isMarathonDay = countdown.isMarathonDay;
-  const motivationalMessage = isMarathonDay
-    ? "Let's do this! 🚀"
-    : MOTIVATIONAL_MESSAGES[motivationIndex];
-  const friendsMention = isMarathonDay
-    ? "Time to show what you're made of! 🏆"
-    : "Shoutout to the marathon squad! Let's make this epic!";
+  const motivationalMessage = MOTIVATIONAL_MESSAGES[motivationIndex];
+  const friendsMention =
+    "Shoutout to the marathon squad! Let's make this epic!";
 
   const images = {
     asier: asierImg,
@@ -230,27 +225,25 @@ const MarathonPage: React.FC = () => {
     <div className="container" style={{ position: "relative" }}>
       <Sparkles sparkles={sparkles} />
       <div className="content">
-        <h1 className="title">
-          {isMarathonDay ? "IT'S MARATHON DAY! 🏃‍♂️" : "BARCELONA MARATHON 2026!"}
-        </h1>
-        <div className="subtitle">
-          {isMarathonDay
-            ? "Go crush it! You've got this! 💪"
-            : "4 Runners. 42.195km. 1 Destiny"}
-        </div>
+        <h1 className="title">{"BARCELONA MARATHON 2026!"}</h1>
+        <div className="subtitle">{"4 Runners. 42.195km. 1 Destiny"}</div>
         <div className="section-spacing">
           <div id="total-km-combined">
             {stravaLoading ? (
               <img src={spinner2Img} alt="Loading..." className="spinner-img" />
             ) : (
-              <span dangerouslySetInnerHTML={{ __html: totalKmCombined }} />
+              <>
+                {totalKm !== null && (
+                  <span className="total-distance">{totalKm} KM</span>
+                )}
+                {totalTime && <span className="total-time">{totalTime}</span>}
+              </>
             )}
           </div>
         </div>
         <div className="section-spacing">
           <CountdownTimer
             countdown={countdown}
-            isMarathonDay={isMarathonDay}
             onCountdownClick={handleCountdownClick}
           />
         </div>
@@ -264,7 +257,6 @@ const MarathonPage: React.FC = () => {
           />
         </div>
         <Motivation
-          isMarathonDay={isMarathonDay}
           motivationalMessage={motivationalMessage}
           friendsMention={friendsMention}
         />

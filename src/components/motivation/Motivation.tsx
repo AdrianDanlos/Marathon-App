@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import "./Motivation.css";
 
 type MotivationProps = {
-  isMarathonDay: boolean;
   motivationalMessage: string;
   friendsMention: string;
 };
 
-const Motivation: React.FC<MotivationProps> = ({ isMarathonDay, motivationalMessage, friendsMention }) => {
+const Motivation: React.FC<MotivationProps> = ({ motivationalMessage, friendsMention }) => {
   const [displayedMessage, setDisplayedMessage] = useState(motivationalMessage);
   const [fade, setFade] = useState(true);
 

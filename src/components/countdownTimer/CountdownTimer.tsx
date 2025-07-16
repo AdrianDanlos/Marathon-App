@@ -10,13 +10,11 @@ type CountdownState = {
 
 type CountdownTimerProps = {
   countdown: CountdownState;
-  isMarathonDay: boolean;
   onCountdownClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 
 const CountdownTimer: React.FC<CountdownTimerProps> = ({
   countdown,
-  isMarathonDay,
   onCountdownClick,
 }) => (
   <div className="countdown-container">
