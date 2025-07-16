@@ -52,4 +52,7 @@
   .runners-grid {
     height: 515px;
   }
+  .runners-overlay-back {
+    font-size: 2rem;
+  }
 }

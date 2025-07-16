@@ -16,11 +16,25 @@
 }
 
 .runners-overlay-stats {
-  border-radius: 12px;
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
   align-items: flex-start;
+  text-align: left;
+  gap: 0.5em;
+}
+
+.runners-overlay-stat-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 0.25em;
+}
+
+.runners-overlay-stat-item strong,
+.runners-overlay-stat-item span {
+  display: inline;
+  text-align: left;
+  vertical-align: baseline;
 }
 
 .runners-overlay-stats strong {
@@ -35,5 +49,8 @@
     flex-direction: column;
     gap: 50px;
     padding: 1rem;
+  }
+  .runners-overlay-level-name {
+    font-size: 1.4rem;
   }
 }

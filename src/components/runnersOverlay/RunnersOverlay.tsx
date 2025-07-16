@@ -38,23 +38,19 @@ export const RunnersOverlay: React.FC<RunnersOverlayProps> = ({
           <Badges badges={badges} />
         </div>
         <div className="runners-overlay-stats">
-          <div>
-            <strong>Longest Run:</strong>
-            <span>{longestRun} km</span>
+          <div className="runners-overlay-stat-item">
+            <strong>Longest Run:</strong><span>{longestRun} km</span>
           </div>
-          <div>
-            <strong>Fastest Pace:</strong>
-            <span>{fastestPace} min/km</span>
+          <div className="runners-overlay-stat-item">
+            <strong>Fastest Pace:</strong><span>{fastestPace} min/km</span>
           </div>
-          <div>
-            <strong>Total Time:</strong>
-            <span>{totalTime}</span>
+          <div className="runners-overlay-stat-item">
+            <strong>Total Time:</strong><span>{totalTime}</span>
           </div>
-          <div>
-            <strong>Total KM:</strong>
-            <span>{totalKm} km</span>
+          <div className="runners-overlay-stat-item">
+            <strong>Total KM:</strong><span>{totalKm} km</span>
           </div>
-          <div>
+          <div className="runners-overlay-stat-item">
             <strong>Distance:</strong>
             <span>
               {from} → {to} {country && `(${country})`}
