@@ -70,7 +70,7 @@ interface AthleteTokens {
   [key: string]: string;
 }
 
-// This is a Vercel serverless function that fetches data from the Strava API. Vercel reads the default export function and runs it as a serverless function.
+// This is a Vercel serverless function that fetches data from the Strava API. Vercel reads the default export function from every file under /api and runs it as a serverless function.
 export default async function handler(
   req: unknown,
   res: {
