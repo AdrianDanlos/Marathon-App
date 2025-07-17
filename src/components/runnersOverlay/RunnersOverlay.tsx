@@ -20,6 +20,17 @@ export const RunnersOverlay: React.FC<RunnersOverlayProps> = ({
   const levelInfo = getLevelInfo(totalKm);
   const { from, to, country } = getClosestCityDistance(totalKm);
 
+  const stats = [
+    { label: "Longest Run", value: `${longestRun} km` },
+    { label: "Fastest Pace", value: `${fastestPace} min/km` },
+    { label: "Total Time", value: totalTime },
+    { label: "Total KM", value: `${totalKm} km` },
+    {
+      label: "Distance",
+      value: `${from} → ${to}${country ? ` (${country})` : ""}`,
+    },
+  ];
+
   return (
     <div className={`runners-overlay${animate ? " show" : ""}`}>
       <button
@@ -38,24 +49,12 @@ export const RunnersOverlay: React.FC<RunnersOverlayProps> = ({
           <Badges badges={badges} />
         </div>
         <div className="runners-overlay-stats">
-          <div className="runners-overlay-stat-item">
-            <strong>Longest Run:</strong><span>{longestRun} km</span>
-          </div>
-          <div className="runners-overlay-stat-item">
-            <strong>Fastest Pace:</strong><span>{fastestPace} min/km</span>
-          </div>
-          <div className="runners-overlay-stat-item">
-            <strong>Total Time:</strong><span>{totalTime}</span>
-          </div>
-          <div className="runners-overlay-stat-item">
-            <strong>Total KM:</strong><span>{totalKm} km</span>
-          </div>
-          <div className="runners-overlay-stat-item">
-            <strong>Distance:</strong>
-            <span>
-              {from} → {to} {country && `(${country})`}
-            </span>
-          </div>
+          {stats.map(({ label, value }) => (
+            <div key={label} className="runners-overlay-stat-item">
+              <strong>{label}:</strong>
+              <span>{value}</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

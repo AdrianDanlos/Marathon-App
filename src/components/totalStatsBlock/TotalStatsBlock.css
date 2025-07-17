@@ -1,0 +1,53 @@
+#total-km-combined {
+  background: rgba(252, 76, 2, 0.71);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.5rem;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  padding: 0.5em;
+  margin: 2rem auto 2rem auto;
+  text-align: center;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 370px;
+  max-width: 370px;
+  transition: box-shadow 0.2s;
+  margin-bottom: 0;
+  min-height: 2.5em;
+  height: 2.5em;
+}
+
+#total-km-combined > span {
+  display: flex;
+  align-items: center;
+}
+
+.total-distance {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.total-time {
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.9;
+  letter-spacing: 0.05em;
+  position: relative;
+}
+
+.total-time::before {
+  content: "•";
+  margin: 0 1rem;
+  opacity: 0.7;
+}
+
+@media (max-width: 600px) {
+  #total-km-combined {
+    width: 90%;
+  }
+}

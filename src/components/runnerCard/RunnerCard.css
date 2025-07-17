@@ -66,12 +66,6 @@
   opacity: 0.8;
 }
 
-.spinner-img {
-  width: 24px;
-  height: 24px;
-  animation: spinner-rotate 1s linear infinite;
-}
-
 @keyframes spinner-rotate {
   0% {
     transform: rotate(0deg);

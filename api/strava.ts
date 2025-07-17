@@ -132,6 +132,8 @@ export default async function handler(
         { headers: { Authorization: `Bearer ${access_token}` } }
       );
 
+      console.log('activitiesRes :>> ', activitiesRes);
+
       if (!activitiesRes.ok) {
         console.error(
           `Activities fetch failed for ${athleteName}:`,
@@ -219,6 +221,15 @@ const getFastestPaceEver = (activities: StravaActivity[]): number => {
   const paces = runs.map((act) => act.moving_time / (act.distance / 1000) / 60); // min/km
   const fastest = Math.min(...paces);
   return Math.round(fastest * 100) / 100;
+};
+
+// Helper: get ISO week number
+const getWeekNumber = (d: Date) => {
+  d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
 };
 
 const getBadges = (runs: StravaActivity[]): string[] => {
@@ -341,15 +352,6 @@ const getBadges = (runs: StravaActivity[]): string[] => {
   if (totalKmEver >= 1000) {
     badgeResults.push(badges.transcontinentalTitan.key);
   }
-
-  // Helper: get ISO week number
-  const getWeekNumber = (d: Date) => {
-    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-    const dayNum = d.getUTCDay() || 7;
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
-  };
 
   return badgeResults;
 };
