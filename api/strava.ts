@@ -73,19 +73,10 @@ interface AthleteTokens {
 // This is a Vercel serverless function that fetches data from the Strava API. Vercel reads the default export function and runs it as a serverless function.
 export default async function handler(
   req: unknown,
-  res: unknown
+  res: {
+    status: (code: number) => { json: (body: unknown) => void };
+  }
 ): Promise<void> {
-  /* INSTRUCTIONS TO ALLOW STRAVA TO ACCESS USER DATA
-  const redirect_uri = process.env.STRAVA_REDIRECT_URI;
-  // Every user we want to gather data for should visit this URL to authorize the app and then send us the CODE from the generated URL
-  const auth = `https://www.strava.com/oauth/authorize?client_id=${client_id}&response_type=code&redirect_uri=${encodeURIComponent(
-    redirect_uri
-  )}&approval_prompt=force&scope=activity:read_all`;
-  //Afterwards we can use the code to get the refresh token for that user by running a curl request with the correct code
-  curl -X POST https://www.strava.com/api/v3/oauth/token -d client_id=167611 -d client_secret=9b1e9971a91ede4d0e5f5e3808bd9c783162d1f5 -d code=8c04f3d3ff90443eaec4aa1d9bbc57e690e8c56e -d grant_type=authorization_code
-  // Retrieve the refresh token from the response and add it to your environment variables for that specific user
-  */
-
   const {
     client_id,
     client_secret,
@@ -102,36 +93,29 @@ export default async function handler(
     hodei: refresh_token_hodei as string,
   };
 
-  // Add type assertion for res where needed
-  const response = res as {
-    status: (code: number) => { json: (body: unknown) => void };
-  };
-
-  // Create an async function to process each athlete
-  const processAthlete = async ([athleteName, token]: [
+  const fetchAthleteData = async ([athleteName, athleteToken]: [
     string,
     string
   ]): Promise<AthleteResult | null> => {
     try {
-      if (!token) {
+      if (!athleteToken) {
         console.error(`No refresh token found for ${athleteName}`);
-        return null; // Return null instead of continuing
+        return null;
       }
 
       // Get a new access token
       const tokenRes = await fetch(
-        `https://www.strava.com/api/v3/oauth/token?client_id=${client_id}&client_secret=${client_secret}&refresh_token=${token}&grant_type=refresh_token`,
+        `https://www.strava.com/api/v3/oauth/token?client_id=${client_id}&client_secret=${client_secret}&refresh_token=${athleteToken}&grant_type=refresh_token`,
         { method: "POST" }
       );
 
-      // Check if the response is ok and is JSON
       if (!tokenRes.ok) {
         console.error(
           `Token refresh failed for ${athleteName}:`,
           tokenRes.status,
           tokenRes.statusText
         );
-        return null; // Return null instead of continuing
+        return null;
       }
 
       const tokenData: StravaTokenResponse = await tokenRes.json();
@@ -142,7 +126,6 @@ export default async function handler(
         return null;
       }
 
-      // Fetch your latest activities
       const activitiesRes = await fetch(
         //TODO: If you want to fetch more than 200 activities, you can use the page parameter to paginate through results
         "https://www.strava.com/api/v3/athlete/activities?per_page=200",
@@ -172,12 +155,12 @@ export default async function handler(
       };
     } catch (error) {
       console.error(`Error processing ${athleteName}:`, error);
-      return null; // Return null on error
+      return null;
     }
   };
 
-  // Run all athlete processing in parallel
-  const athletePromises = Object.entries(athleteTokens).map(processAthlete);
+  // Run all athlete fetches in parallel
+  const athletePromises = Object.entries(athleteTokens).map(fetchAthleteData);
   const results = await Promise.all(athletePromises);
 
   // Filter out null results (failed requests)
@@ -185,7 +168,7 @@ export default async function handler(
     (result): result is AthleteResult => result !== null
   );
 
-  response.status(200).json({
+  res.status(200).json({
     activities,
   });
 }
@@ -217,7 +200,6 @@ const getActivitiesSinceJune = (
   );
 };
 
-// Returns the longest run ever (in km)
 const getLongestRunEver = (activities: StravaActivity[]): number => {
   const runs = activities.filter((act) => act.type === "Run");
   if (runs.length === 0) return 0;
@@ -228,7 +210,6 @@ const getLongestRunEver = (activities: StravaActivity[]): number => {
   return Math.round((longest.distance / 1000) * 100) / 100; // km
 };
 
-// Returns the fastest pace ever (min/km)
 const getFastestPaceEver = (activities: StravaActivity[]): number => {
   const runs = activities.filter(
     (act) => act.type === "Run" && act.distance > 0 && act.moving_time > 0
@@ -362,13 +343,13 @@ const getBadges = (runs: StravaActivity[]): string[] => {
   }
 
   // Helper: get ISO week number
-  function getWeekNumber(d: Date) {
+  const getWeekNumber = (d: Date) => {
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
     const dayNum = d.getUTCDay() || 7;
     d.setUTCDate(d.getUTCDate() + 4 - dayNum);
     const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
     return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
-  }
+  };
 
   return badgeResults;
 };

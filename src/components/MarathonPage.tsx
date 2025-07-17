@@ -6,6 +6,7 @@ import Motivation from "./motivation/Motivation";
 import TrackLink from "./trackLink/TrackLink";
 import spinner2Img from "@assets/images/spinner2.png";
 import type { AthleteData, Athlete } from "../utils/types";
+import "./MarathonPage.css";
 
 const MarathonPage: React.FC = () => {
   const [stravaData, setStravaData] = useState<Athlete[] | null>(null);

@@ -48,6 +48,10 @@
   background: none;
 }
 
+.runners-section {
+  margin-bottom: 0;
+}
+
 @media (max-width: 600px) {
   .runners-grid {
     height: 515px;

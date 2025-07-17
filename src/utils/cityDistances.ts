@@ -47,8 +47,8 @@ const cityDistances = [
   { from: "Barcelona", to: "Varsovia", km: 1350, country: "Polonia" },
 ];
 
-export function getClosestCityDistance(km: number) {
+export const getClosestCityDistance = (km: number) => {
   return cityDistances.reduce((prev, curr) =>
     Math.abs(curr.km - km) < Math.abs(prev.km - km) ? curr : prev
   );
-}
+};

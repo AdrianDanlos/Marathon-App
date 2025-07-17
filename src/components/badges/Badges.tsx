@@ -5,24 +5,24 @@ type BadgesProps = {
   badges: string[];
 };
 
+const renderBadgeRow = (badges: string[]) => (
+  badges.length > 0 && (
+    <div className="badges">
+      {badges.map((badge) => (
+        <RenderBadge key={badge} badge={badge} />
+      ))}
+    </div>
+  )
+);
+
 export const Badges = ({ badges }: BadgesProps) => {
   const firstRow = badges.slice(0, 6);
   const secondRow = badges.slice(6);
 
   return (
     <>
-      <div className="badges">
-        {firstRow.map((badge) => {
-          return <RenderBadge badge={badge} />;
-        })}
-      </div>
-      {Boolean(secondRow.length) && (
-        <div className="badges">
-          {secondRow.map((badge) => {
-            return <RenderBadge badge={badge} />;
-          })}
-        </div>
-      )}
-    </>
+    {renderBadgeRow(firstRow)}
+    {renderBadgeRow(secondRow)}
+  </>
   );
 };
