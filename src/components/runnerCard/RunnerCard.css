@@ -72,6 +72,10 @@
   }
 }
 
+.spinner-cards {
+  margin-top: 10px;
+}
+
 .runner-level {
   margin-top: 20px;
   width: 100%;

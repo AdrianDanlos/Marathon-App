@@ -28,7 +28,11 @@ const RunnerCard: React.FC<RunnerCardProps> = ({
       <img src={img} alt={cardId} className="runner-image" />
       <div className="runner-result-area">
         {!stravaData ? (
-          <img src={spinnerImg} alt="Loading..." className="spinner-img" />
+          <img
+            src={spinnerImg}
+            alt="Loading..."
+            className="spinner-img spinner-cards"
+          />
         ) : (
           <>
             <div className="runner-name">
