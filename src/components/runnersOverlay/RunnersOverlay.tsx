@@ -9,7 +9,7 @@ import "./RunnersOverlay.css";
 interface RunnersOverlayProps {
   animate: boolean;
   stravaData: AthleteData;
-  img: string;
+  img: string | undefined;
   onClose: () => void;
 }
 
