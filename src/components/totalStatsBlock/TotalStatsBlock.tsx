@@ -13,25 +13,28 @@ const TotalStatsBlock: React.FC<TotalStatsBlockProps> = ({
   totalKm,
   totalTime,
 }) => {
-  if (stravaLoading) {
-    return (
-      <div id="total-km-combined">
-        <img
-          src={spinner2Img}
-          alt="Loading..."
-          className="spinner-img"
-          role="status"
-          aria-live="polite"
-        />
-      </div>
-    );
-  }
-
   return (
-    <div id="total-km-combined">
-      {totalKm !== null && <span className="total-distance">{totalKm} KM</span>}
-      {totalTime && <span className="total-time">{totalTime}</span>}
-    </div>
+    <>
+      <div className="combined-label">Combined stats for all runners</div>
+      <div id="total-km-combined">
+        {stravaLoading ? (
+          <img
+            src={spinner2Img}
+            alt="Loading..."
+            className="spinner-img"
+            role="status"
+            aria-live="polite"
+          />
+        ) : (
+          <>
+            {totalKm !== null && (
+              <span className="total-distance">{totalKm} KM</span>
+            )}
+            {totalTime && <span className="total-time">{totalTime}</span>}
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

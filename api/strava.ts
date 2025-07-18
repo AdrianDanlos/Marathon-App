@@ -132,8 +132,6 @@ export default async function handler(
         { headers: { Authorization: `Bearer ${access_token}` } }
       );
 
-      console.log('activitiesRes :>> ', activitiesRes);
-
       if (!activitiesRes.ok) {
         console.error(
           `Activities fetch failed for ${athleteName}:`,

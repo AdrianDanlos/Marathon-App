@@ -22,7 +22,6 @@
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid rgba(255, 255, 255, 0.3);
-  margin-bottom: 0.5rem;
   transition: transform 0.3s ease;
 }
 
@@ -41,16 +40,14 @@
 }
 
 .runner-name {
-  font-size: 1.2rem;
+  color: #ff5a13;
   font-weight: bold;
-  color: #fff;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
   margin-top: 0.5rem;
   margin-bottom: 0.3rem;
 }
 
 .runner-result-area {
-  margin-top: 0.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -62,7 +59,7 @@
 .runner-time {
   font-size: 0.8rem;
   color: #fff;
-  margin-top: 0.4rem;
+  margin-top: 0.3rem;
   opacity: 0.8;
 }
 

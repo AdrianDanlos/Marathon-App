@@ -16,6 +16,7 @@ body {
   width: 24px;
   height: 24px;
   animation: spinner-rotate 1s linear infinite;
+  margin-top: 10px;
 }
 
 @keyframes spinner-rotate {

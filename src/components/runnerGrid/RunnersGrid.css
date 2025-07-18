@@ -54,9 +54,11 @@
 
 @media (max-width: 600px) {
   .runners-grid {
-    height: 515px;
+    height: 545px;
   }
   .runners-overlay-back {
     font-size: 2rem;
+    top: 14px;
+    left: 10px;
   }
 }

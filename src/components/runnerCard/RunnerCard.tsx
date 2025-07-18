@@ -31,7 +31,11 @@ const RunnerCard: React.FC<RunnerCardProps> = ({
           <img src={spinnerImg} alt="Loading..." className="spinner-img" />
         ) : (
           <>
-            <div id={`${cardId}-totalKm`}>{stravaData.totalKm} KM</div>
+            <div className="runner-name">
+              {/* First letter to uppercase */}
+              {cardId.charAt(0).toUpperCase() + cardId.slice(1)}
+            </div>
+            <div id={`${cardId}-totalKm`}>{stravaData.totalKm} km</div>
             <div id={`${cardId}-totalTime`} className="runner-time">
               {stravaData.totalTime}
             </div>

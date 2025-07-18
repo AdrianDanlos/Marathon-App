@@ -64,6 +64,7 @@ const RunnersGrid: React.FC<RunnersGridProps> = ({ stravaData }) => {
             animate={animateOverlay}
             onClose={() => setShowOverlay(false)}
             stravaData={getRunnerStats(stravaData, selectedRunner!)}
+            img={runners.find((runner) => runner.id === selectedRunner)?.img}
           />
         )}
       </div>

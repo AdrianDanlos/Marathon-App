@@ -9,6 +9,7 @@ import "./RunnersOverlay.css";
 interface RunnersOverlayProps {
   animate: boolean;
   stravaData: AthleteData;
+  img: string;
   onClose: () => void;
 }
 
@@ -16,6 +17,7 @@ export const RunnersOverlay: React.FC<RunnersOverlayProps> = ({
   animate,
   onClose,
   stravaData,
+  img,
 }) => {
   const { totalKm, longestRun, fastestPace, totalTime, badges } = stravaData;
   const levelInfo = getLevelInfo(totalKm);
@@ -41,6 +43,7 @@ export const RunnersOverlay: React.FC<RunnersOverlayProps> = ({
       >
         ←
       </button>
+      <img src={img} alt="Runner" className="runners-overlay-img" />
       <div className="runners-overlay-content">
         <div>
           <div className="runners-overlay-level-name">
