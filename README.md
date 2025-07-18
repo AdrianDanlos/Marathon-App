@@ -32,3 +32,7 @@ A React + TypeScript app for tracking marathon training, powered by Strava.
 
 - `src/` — React app (components, hooks, assets)
 - `api/` — Serverless Strava API (Vercel function)
+
+## Issues / Board
+
+https://github.com/users/AdrianDanlos/projects/5/views/1
