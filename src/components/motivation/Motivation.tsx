@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Motivation.css";
+import { STRINGS } from "../../utils/strings";
 
 const MOTIVATIONAL_MESSAGES = [
   "You've got this! 🚀",
@@ -27,12 +28,14 @@ const Motivation: React.FC = () => {
 
   return (
     <div className="motivation">
-      <div className={`motivation-text fade-motivation${fade ? " fade-in" : " fade-out"}`}>
+      <div
+        className={`motivation-text fade-motivation${
+          fade ? " fade-in" : " fade-out"
+        }`}
+      >
         {MOTIVATIONAL_MESSAGES[index]}
       </div>
-      <div className="friends-mention">
-        Shoutout to the marathon squad! Let's make this epic!
-      </div>
+      <div className="friends-mention">{STRINGS.FOOTER_MOTIVATION}</div>
     </div>
   );
 };
