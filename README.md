@@ -36,3 +36,7 @@ A React + TypeScript app for tracking marathon training, powered by Strava.
 ## Issues / Board
 
 https://github.com/users/AdrianDanlos/projects/5/views/1
+
+## Code linting / Formatting
+
+Install the recommended VSCode extensions (ESLint and Prettier) under ./vscode/extensions.json to avoid pre-commit errors and ensure consistent code style.
