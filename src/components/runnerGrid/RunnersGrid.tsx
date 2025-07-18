@@ -14,7 +14,6 @@ interface RunnersGridProps {
   stravaLoading: boolean;
 }
 
-// Memoized runners array (static)
 const runners = [
   { id: "asier", img: asierImg },
   { id: "hodei", img: hodeiImg },
