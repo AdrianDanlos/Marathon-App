@@ -1,5 +1,6 @@
 import { getClosestCityDistance } from "../../utils/cityDistances";
 import { getLevelInfo } from "../../utils/levelUtils";
+import { STRINGS } from "../../utils/strings";
 import type { AthleteData } from "../../utils/types";
 import { Badges } from "../badges/Badges";
 import { RunnerLevel } from "../runnerLevel/RunnerLevel";
@@ -21,12 +22,12 @@ export const RunnersOverlay: React.FC<RunnersOverlayProps> = ({
   const { from, to, country } = getClosestCityDistance(totalKm);
 
   const stats = [
-    { label: "Longest Run", value: `${longestRun} km` },
-    { label: "Fastest Pace", value: `${fastestPace} min/km` },
-    { label: "Total Time", value: totalTime },
-    { label: "Total KM", value: `${totalKm} km` },
+    { label: STRINGS.LONGEST_RUN, value: `${longestRun} km` },
+    { label: STRINGS.FASTEST_PACE, value: `${fastestPace} min/km` },
+    { label: STRINGS.TOTAL_TIME, value: totalTime },
+    { label: STRINGS.TOTAL_KM, value: `${totalKm} km` },
     {
-      label: "Distance",
+      label: STRINGS.DISTANCE,
       value: `${from} → ${to}${country ? ` (${country})` : ""}`,
     },
   ];

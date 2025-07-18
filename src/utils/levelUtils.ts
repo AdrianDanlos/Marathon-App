@@ -1,3 +1,5 @@
+import { STRINGS } from "./strings";
+
 export type LevelInfo = {
   level: number;
   progress: number;
@@ -85,4 +87,4 @@ export const runnerLevelNames = [
 ];
 
 const getLevelName = (level: number): string =>
-  runnerLevelNames[level - 1] || "Más Allá de la Realidad";
+  runnerLevelNames[level - 1] || STRINGS.MAX_LEVEL;
