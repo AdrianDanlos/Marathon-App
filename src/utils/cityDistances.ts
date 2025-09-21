@@ -1,5 +1,6 @@
 const cityDistances = [
   { from: "Tu sofá", to: "La nevera", km: 0 },
+  { from: "Tu casa", to: "El bar", km: 5 },
   { from: "Barcelona", to: "Sitges", km: 30, country: "España" },
   { from: "Barcelona", to: "Mataró", km: 60, country: "España" },
   { from: "Barcelona", to: "Sabadell", km: 90, country: "España" },
@@ -49,6 +50,6 @@ const cityDistances = [
 
 export const getClosestCityDistance = (km: number) => {
   return cityDistances.reduce((prev, curr) =>
-    Math.abs(curr.km - km) < Math.abs(prev.km - km) ? curr : prev
+    Math.abs(curr.km - km) < Math.abs(prev.km - km) ? curr : prev,
   );
 };
