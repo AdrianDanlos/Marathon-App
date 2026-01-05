@@ -75,7 +75,7 @@ export default async function handler(
   req: unknown,
   res: {
     status: (code: number) => { json: (body: unknown) => void };
-  }
+  },
 ): Promise<void> {
   const {
     client_id,
@@ -95,7 +95,7 @@ export default async function handler(
 
   const fetchAthleteData = async ([athleteName, athleteToken]: [
     string,
-    string
+    string,
   ]): Promise<AthleteResult | null> => {
     try {
       if (!athleteToken) {
@@ -106,14 +106,14 @@ export default async function handler(
       // Get a new access token
       const tokenRes = await fetch(
         `https://www.strava.com/api/v3/oauth/token?client_id=${client_id}&client_secret=${client_secret}&refresh_token=${athleteToken}&grant_type=refresh_token`,
-        { method: "POST" }
+        { method: "POST" },
       );
 
       if (!tokenRes.ok) {
         console.error(
           `Token refresh failed for ${athleteName}:`,
           tokenRes.status,
-          tokenRes.statusText
+          tokenRes.statusText,
         );
         return null;
       }
@@ -129,14 +129,14 @@ export default async function handler(
       const activitiesRes = await fetch(
         //TODO: If you want to fetch more than 200 activities, you can use the page parameter to paginate through results
         "https://www.strava.com/api/v3/athlete/activities?per_page=200",
-        { headers: { Authorization: `Bearer ${access_token}` } }
+        { headers: { Authorization: `Bearer ${access_token}` } },
       );
 
       if (!activitiesRes.ok) {
         console.error(
           `Activities fetch failed for ${athleteName}:`,
           activitiesRes.status,
-          activitiesRes.statusText
+          activitiesRes.statusText,
         );
         return null;
       }
@@ -165,7 +165,7 @@ export default async function handler(
 
   // Filter out null results (failed requests)
   const activities = results.filter(
-    (result): result is AthleteResult => result !== null
+    (result): result is AthleteResult => result !== null,
   );
 
   res.status(200).json({
@@ -181,7 +181,7 @@ const getTotalKm = (activities: StravaActivity[]): number => {
 const getTotalTime = (activities: StravaActivity[]): string => {
   const totalSeconds = activities.reduce(
     (sum, act) => sum + act.moving_time,
-    0
+    0,
   );
   // Convert seconds to hours, minutes, seconds
   const hours = Math.floor(totalSeconds / 3600);
@@ -190,13 +190,11 @@ const getTotalTime = (activities: StravaActivity[]): string => {
 };
 
 const getActivitiesSinceJune = (
-  activities: StravaActivity[]
+  activities: StravaActivity[],
 ): StravaActivity[] => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const juneFirst = new Date(`${year}-06-01T00:00:00Z`);
+  const startDate = new Date("2025-01-01T00:00:00Z");
   return activities.filter(
-    (act) => act.type === "Run" && new Date(act.start_date) >= juneFirst
+    (act) => act.type === "Run" && new Date(act.start_date) >= startDate,
   );
 };
 
@@ -205,14 +203,14 @@ const getLongestRunEver = (activities: StravaActivity[]): number => {
   if (runs.length === 0) return 0;
   const longest = runs.reduce(
     (max, act) => (act.distance > max.distance ? act : max),
-    runs[0]
+    runs[0],
   );
   return Math.round((longest.distance / 1000) * 100) / 100; // km
 };
 
 const getFastestPaceEver = (activities: StravaActivity[]): number => {
   const runs = activities.filter(
-    (act) => act.type === "Run" && act.distance > 0 && act.moving_time > 0
+    (act) => act.type === "Run" && act.distance > 0 && act.moving_time > 0,
   );
   if (runs.length === 0) return 0;
   // pace in min/km = (moving_time in seconds) / (distance in meters) * 1000 / 60
@@ -272,7 +270,7 @@ const getBadges = (runs: StravaActivity[]): string[] => {
   // Climber: any run with total_elevation_gain >= 200m
   if (
     runs.some(
-      (act) => act.total_elevation_gain && act.total_elevation_gain >= 200
+      (act) => act.total_elevation_gain && act.total_elevation_gain >= 200,
     )
   ) {
     badgeResults.push(badges.climber.key);
