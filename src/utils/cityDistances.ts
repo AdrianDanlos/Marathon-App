@@ -45,7 +45,19 @@ const cityDistances = [
   { from: "Barcelona", to: "Bruselas", km: 1260, country: "Bélgica" },
   { from: "Barcelona", to: "Ámsterdam", km: 1290, country: "Países Bajos" },
   { from: "Barcelona", to: "Hamburgo", km: 1320, country: "Alemania" },
-  { from: "Barcelona", to: "Varsovia", km: 1350, country: "Polonia" },
+  { from: "Barcelona", to: "Bremen", km: 1350, country: "Alemania" },
+  { from: "Barcelona", to: "Hannover", km: 1380, country: "Alemania" },
+  { from: "Barcelona", to: "Berlín", km: 1410, country: "Alemania" },
+  { from: "Barcelona", to: "Leipzig", km: 1440, country: "Alemania" },
+  { from: "Barcelona", to: "Dresde", km: 1470, country: "Alemania" },
+  { from: "Barcelona", to: "Poznań", km: 1500, country: "Polonia" },
+  { from: "Barcelona", to: "Wrocław", km: 1530, country: "Polonia" },
+  { from: "Barcelona", to: "Praga", km: 1560, country: "República Checa" },
+  { from: "Barcelona", to: "Viena", km: 1590, country: "Austria" },
+  { from: "Barcelona", to: "Budapest", km: 1620, country: "Hungría" },
+  { from: "Barcelona", to: "Cracovia", km: 1650, country: "Polonia" },
+  { from: "Barcelona", to: "Varsovia", km: 1680, country: "Polonia" },
+  { from: "Barcelona", to: "Gdańsk", km: 1710, country: "Polonia" },
 ];
 
 export const getClosestCityDistance = (km: number) => {
